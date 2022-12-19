@@ -309,6 +309,48 @@ float averageSample(int lista[ArrayLenght], int channelValue)
   media = media / ArrayLenght;
   return (media);
 }
+
+float Calcular_Ph(int channelValue) { //
+  static unsigned long samplingTime = millis();
+  static unsigned long printTime = millis();
+  static float pHValue, voltage;
+  if (millis() - samplingTime > samplingInterval)
+  {
+    //pHArray[pHArrayIndex++] = ads1015.readADC_SingleEnded(channelValue);
+    if (pHArrayIndex == ArrayLenght)
+    {
+      pHArrayIndex = 0;
+    }
+    //para una mayor precision tomaremos 40 medidas y calcularemos su media
+    voltage = averageSample(pHArray, channelValue) * 4.096 / 32767;
+    //    voltage=pHArray[pHArrayIndex++];
+    pHValue = 3.5 * voltage + Offset;
+    samplingTime = millis();
+    Serial.print("Voltage:");
+    Serial.print(voltage);
+    Serial.print(" pH Value:");
+    Serial.println(pHValue);
+  }
+  if (millis() - printTime > printInterval)
+  {
+    Serial.print("Voltage:");
+    Serial.print(voltage, 2);
+    Serial.print(" pH Value:");
+    Serial.println(pHValue, 2);
+    printTime = millis();
+  }
+  if (pHValue >= 6)
+  {
+    pHValue = 7;
+  }
+  if (pHValue >= 3.51 && pHValue <= 5.3)
+  {
+    pHValue = 4;
+  }
+  return (pHValue);
+}
+
+
 }
 
 void loop() {

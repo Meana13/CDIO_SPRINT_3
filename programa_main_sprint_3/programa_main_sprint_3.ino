@@ -219,7 +219,35 @@ int pHArrayIndex = 0;
 //int LightArray[ArrayLenght];
 
 void setup() {
-  
+  erial.begin(9600);
+  //inicializamos la com. serie(UART) a 9600 baudios
+  Serial.println("Inicializamos las mediciones");
+  ads1015.begin();
+  ads1015.setGain(GAIN_ONE);
+  pinMode(power_pin, OUTPUT);
+
+  connectWiFi();
+  digitalWrite(LED_PIN, HIGH);
+#ifdef PRINT_DEBUG_MESSAGES
+  Serial.print("Server_Host: ");
+  Serial.println(Server_Host);
+  Serial.print("Port: ");
+  Serial.println(String( Server_HttpPort ));
+  Serial.print("Server_Rest: ");
+  Serial.println(Rest_Host);
+#endif
+}
+
+float Calcular_temperatura(int channelValue)
+{
+  int16_t adc0 = ads1015.readADC_SingleEnded(channelValue);
+  double temperatura;
+  float m = 33 * pow(10, -3);
+  float b = 0.95;
+  double Vo = (adc0 * 4.096 / 32767);
+  temperatura = ((Vo - b) / m);
+  return (temperatura);
+}
 
 }
 

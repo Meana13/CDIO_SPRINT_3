@@ -418,6 +418,23 @@ void EnviarDatos(int Humedad, int Sal, float Temperatura, int Ph, int Luz)
 }
 
 void loop() {
-  
+  //llamamos a la funcion de calcular de humedad
+  Humedad = Calcular_humedad(0);
+
+  //llamamos a la funcion de calcular de salinidad
+  Sal = Calcular_salinidad();
+
+  //llamamos a la funcion de calcular de temperatura
+  Temperatura = Calcular_temperatura(2);
+
+  //llamamos a la funcion de calcular de el nivel de Ph Puerto 3
+  NivelPh = Calcular_Ph(3);
+
+  //llamamos a la funcion de calcular de el nivel de Ph Puerto
+  //NivelLuz = Calcular_luz();
+  NivelLuz = 0;
+
+  //Una vez calculados todos los datos los enviamos a la nube
+  EnviarDatos(Humedad, Sal, Temperatura, NivelPh, NivelLuz);
 
 }

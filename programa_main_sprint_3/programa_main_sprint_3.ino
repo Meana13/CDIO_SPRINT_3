@@ -350,6 +350,70 @@ float Calcular_Ph(int channelValue) { //
   return (pHValue);
 }
 
+int Calcular_luz(int channelValue){
+  int NivelLuz = 0;
+  float LecturaLuz = ads1015.readADC_SingleEnded(channelValue);
+  if (LecturaLuz >= 0 && LecturaLuz <= 300 )
+  {
+    NivelLuz = 0;
+  }
+  if (LecturaLuz >= 301 && LecturaLuz <= 600 )
+  {
+    NivelLuz = 1;
+  }
+  if (LecturaLuz >= 601 && LecturaLuz <= 10000 )
+  {
+    NivelLuz = 2;
+  }
+  if (LecturaLuz >= 10001 && LecturaLuz < 50000 )
+  {
+    NivelLuz = 3;
+  }
+  return (NivelLuz);
+}
+void EnviarDatos(int Humedad, int Sal, float Temperatura, int Ph, int Luz)
+{
+  String data[ NUM_FIELDS_TO_SEND + 1];  // Podemos enviar hasta 8 datos
+  data[ 1 ] = String(Humedad); //Escribimos el dato 1. Recuerda actualizar numFields
+#ifdef PRINT_DEBUG_MESSAGES
+  Serial.print( "Porcentaje de humedad = " );
+  Serial.print( data[ 1 ] );
+  Serial.println("%");
+#endif
+
+  data[ 2 ] = String(Sal); //Escribimos el dato 2. Recuerda actualizar numFields
+#ifdef PRINT_DEBUG_MESSAGES
+  Serial.print( "Porcentaje de sal = " );
+  Serial.print( data[ 2 ] );
+  Serial.println("%");
+#endif
+  data[ 3 ] = String(Temperatura); //Escribimos el dato 3. Recuerda actualizar numFields
+#ifdef PRINT_DEBUG_MESSAGES
+  Serial.print( "Nivel de temperatura(en grados centigrados): " );
+  Serial.print( data[ 3 ] );
+  Serial.println("º");
+#endif
+
+  data[ 4 ] = String(Ph); //Escribimos el dato 4. Recuerda actualizar numFields
+#ifdef PRINT_DEBUG_MESSAGES
+  Serial.print( "Nivel de Ph = " );
+  Serial.println( data[ 4 ] );
+#endif
+  data[ 5 ] = String(Luz); //Escribimos el dato 5. Recuerda actualizar numFields
+#ifdef PRINT_DEBUG_MESSAGES
+  Serial.print( "Nivel de luz = " );
+  Serial.println( data[ 5 ] );
+#endif
+
+
+  //Selecciona si quieres enviar con GET(ThingSpeak o Dweet) o con POST(ThingSpeak)
+  //HTTPPost( data, NUM_FIELDS_TO_SEND );
+  HTTPGet( data, NUM_FIELDS_TO_SEND );
+
+  //Selecciona si quieres un retardo de seg 2.5 para hacer pruebas o dormir el SparkFun
+  delay( 2500 );
+  //Serial.print( "Goodnight" );
+  //ESP.deepSleep( sleepTimeSeconds * 1000000 );
 
 }
 
